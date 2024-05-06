@@ -1,6 +1,6 @@
 /**
 *
-* @copyright Copyright (C) 2024 RENARD Mathieu.
+* @copyright Copyright (C) 2024 RENARD Mathieu. All rights reserved.
 *
 * Redistribution and use in source and binary forms, with or without modification,
 * are permitted provided that the following conditions are met:
@@ -240,7 +240,7 @@ int main (int argc, char *argv[])
 
    /* Affichage du prompt */
    printf ( K_SYM2SREC_VERSION );
-   printf ( "Copyright (C) 2024 RENARD Mathieu.\n" );
+   printf ( "Copyright (C) 2024 RENARD Mathieu. All rights reserved.\n" );
    printf ( "This is free software; see the source for copying conditions.  There is NO\n" );
    printf ( "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n" );
    printf ( "\n" );
@@ -251,10 +251,10 @@ int main (int argc, char *argv[])
         ( argv [ 3 ] [ 0 ] != '0' ) || ( argv [ 3 ] [ 1 ] != 'x' ) )
    {
       printf ( "Sym2srec: nothing to do.\n" );
-      printf ( "Usage:\n\n  sym2srec file.elf file.srec symAddr \n\n" );
-      printf ( "  file.elf  : elf file (32bits) containing the symbols to export to the srec file.\n" );
-      printf ( "  file.srec : srecord file to create.\n" );
-      printf ( "  symAddr   : base address where symbols should be stored. Format is 8 digits (ex: 0x002C0000).\n\n");
+      printf ( "Usage:\n\n  sym2srec $(BUILD_ARTIFACT_NAME).elf $(BUILD_ARTIFACT_NAME).srec $(SYMBOL_BASE_ADDR) \n\n" );
+      printf ( "  $(BUILD_ARTIFACT_NAME).elf  : elf file (32bits) containing the symbols to export to the srec file.\n" );
+      printf ( "  $(BUILD_ARTIFACT_NAME).srec : srecord file to create.\n" );
+      printf ( "  $(SYMBOL_BASE_ADDR)         : base address where symbols should be stored. Format is 8 digits (ex: 0x002C0000).\n\n");
    }
 
    /* Sinon */

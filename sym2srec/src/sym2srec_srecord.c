@@ -1,6 +1,6 @@
 /**
 *
-* @copyright Copyright (C) 2024 RENARD Mathieu.
+* @copyright Copyright (C) 2024 RENARD Mathieu. All rights reserved.
 *
 * Redistribution and use in source and binary forms, with or without modification,
 * are permitted provided that the following conditions are met:
@@ -26,7 +26,7 @@
 * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 * @file sym2srec_srecord.c
-* @brief Déclaration des fonctions de création du fichier srec de sortie.
+* @brief Déclaration des fonctions de création du fichier srecord.
 * @date 3 mai 2024
 *
 */
@@ -165,8 +165,7 @@ static uint32_t sym2srec_writeHeader ( Elf32FileParser_t* p_parser, uint32_t p_b
    l_header.strtabBaseAddr = p_strtabAddr;
    l_header.strtabSize = p_parser->strtab->sSize;
    l_header.gnuHashBaseAddr = p_gnuHashAddr;
-   l_header.gnuHashSize = sizeof ( GNUHashTable_t ) + ( p_parser->hashTableHeader.numberOfHash * sizeof ( uint32_t ) ) - 2*sizeof ( uint32_t );
-
+   l_header.gnuHashSize = ( uint32_t ) sizeof ( GNUHashTable_t ) + ( uint32_t ) ( p_parser->hashTableHeader.numberOfHash * sizeof ( uint32_t ) ) - ( uint32_t ) ( 2*sizeof ( uint32_t ) );
    /* Initialisation des variables */
    l_size = l_header.headerSize;
    l_addr = p_baseAddr;
@@ -310,9 +309,9 @@ static uint32_t sym2srec_writeGnuHashTable ( Elf32FileParser_t* p_parser, uint32
 
    /* Initialisation des variables */
    l_buf = ( uint8_t* ) p_parser->hashTableHeader.chain;
-   l_size = p_parser->hashTableHeader.numberOfHash * sizeof ( uint32_t );
+   l_size = p_parser->hashTableHeader.numberOfHash * ( uint32_t ) sizeof ( uint32_t );
    l_chunkSize = 0;
-   l_addr = p_gnuHashAddr + sizeof ( GNUHashTable_t ) - ( 2 * sizeof ( uint32_t ) );
+   l_addr = p_gnuHashAddr + ( uint32_t ) sizeof ( GNUHashTable_t ) - ( uint32_t ) ( 2 * sizeof ( uint32_t ) );
 
    /* Tant que la table n'a pas été copiée dans le fichier srecord */
    while ( ( l_size != 0 ) && ( l_result == K_SYM2SREC_SUCCESS ) )
@@ -377,7 +376,7 @@ uint32_t sym2srec_createSrecord ( Elf32FileParser_t* p_parser, uint8_t* p_baseAd
    if ( l_result == K_SYM2SREC_SUCCESS )
    {
       /* Détermination de l'adresse de la section .symtab */
-      l_symtabAddr = p_parser->baseAddr + sizeof ( SymbolsAreaHeader_t );
+      l_symtabAddr = p_parser->baseAddr + ( uint32_t ) sizeof ( SymbolsAreaHeader_t );
       l_symtabAddr = l_symtabAddr + ( p_parser->symtab->sAddrAlign - ( l_symtabAddr % p_parser->symtab->sAddrAlign ) );
 
       /* Détermination de l'adresse de la section .strtab */
@@ -386,7 +385,7 @@ uint32_t sym2srec_createSrecord ( Elf32FileParser_t* p_parser, uint8_t* p_baseAd
 
       /* Détermination de l'adresse de la section .gnuhash */
       l_gnuHashAddr = l_strtabAddr + p_parser->strtab->sSize;
-      l_gnuHashAddr = l_gnuHashAddr + ( sizeof ( uint32_t ) - ( l_gnuHashAddr % sizeof ( uint32_t ) ) );
+      l_gnuHashAddr = l_gnuHashAddr + ( ( uint32_t ) sizeof ( uint32_t ) - ( l_gnuHashAddr % ( uint32_t ) sizeof ( uint32_t ) ) );
    }
 
    /* Ecriture de l'entête dans le fichier srecord */

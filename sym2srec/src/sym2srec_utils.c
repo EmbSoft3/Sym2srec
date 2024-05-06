@@ -1,6 +1,6 @@
 /**
 *
-* @copyright Copyright (C) 2024 RENARD Mathieu.
+* @copyright Copyright (C) 2024 RENARD Mathieu. All rights reserved.
 *
 * Redistribution and use in source and binary forms, with or without modification,
 * are permitted provided that the following conditions are met:
@@ -26,7 +26,7 @@
 * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 * @file sym2srec_utils.c
-* @brief Déclaration des fonctions utilitaire.
+* @brief Déclaration des fonctions utilitaires.
 * @date 3 mai 2024
 *
 */
