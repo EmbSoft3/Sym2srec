@@ -49,7 +49,8 @@ S-Record file.
 Sym2srec can be built using the [makefile](make/makefile) file on the repository.
 The variable **TOOLCHAIN_PATH** must be updated with the path of the MinGW-W64
 toolchain.
-Fisrt issue a **make clean** command then build the target with **make all**.
+
+First issue a **make clean** command then build the target with **make all**.
 
 Currently versions of compiler used are the followings:
 
