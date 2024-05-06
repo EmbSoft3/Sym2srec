@@ -142,7 +142,7 @@ static uint32_t sym2srec_getFileSize ( Elf32FileParser_t* p_parser )
  * @endinternal
  */
 
-static uint32_t sym2srec_launch ( int argc, char *argv[] )
+static uint32_t sym2srec_launch ( char *argv[] )
 {
    /* Déclaration de la variable de retour */
    uint32_t l_result = K_SYM2SREC_SUCCESS;
@@ -204,9 +204,6 @@ static uint32_t sym2srec_launch ( int argc, char *argv[] )
    /* Libération de la mémoire et des instances allouées */
    sym2srec_clean ( &l_parser, l_result );
 
-   /* Suppression warning */
-   ( void ) argc;
-
    /* Retour */
    return ( l_result );
 }
@@ -261,7 +258,7 @@ int main (int argc, char *argv[])
    else
    {
       /* Lancement du programme */
-      l_result = sym2srec_launch ( argc, argv );
+      l_result = sym2srec_launch ( argv );
    }
 
    /* Fin du programme */
