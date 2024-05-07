@@ -42,10 +42,10 @@ This command removes all non-global and debug symbols from the artefact.
 Strip is a GNU Development Tools, it can be found in the GNU Development 
 Toolchain (arm-none-eabi-strip, ...).
 
-### Symbols
+### Symbol Resolution
 
-The wiki in the repository describes how a loader can load external
-applications by resolving symbols in the S-Record file.
+The wiki in the repository describes how a dynamic loader may load external
+applications by resolving symbols.
 
 ### Build
 
