@@ -1,28 +1,31 @@
 # Sym2srec
 
-The purpose of Sym2srec is to insert both sections "**.symtab**" and "**.strtab**"
-into a new executable file.
+**Sym2srec** is a CLI program that copies both sections "*.symtab*" and 
+"*.strtab*" of an executable file into loadable segments of a new executable 
+file. The goal is to allow an external program to run in main memory (dynamic 
+loading). 
 
-The software uses a destination address and an ELF32 file as inputs. It produces 
-an S-Record (.srec) file as output. A hash table ([.gnu hash](https://flapenguin.me/elf-dt-gnu-hash)) 
-is also produced and inserted into the S-Record file.
+The software uses a destination address and an **ELF32** file (.elf) as inputs. 
+It produces an **S-Record** file (.srec) as output. A hash table 
+([.gnu hash](https://flapenguin.me/elf-dt-gnu-hash)) is also produced and copied 
+into the S-Record file to accelerate symbol relocations.
 
 ### Usage
 
-Sym2srec can be run with the following command line:
+**Sym2srec** can be run from the command line interface with the following command:
 
->**sym2srec**  $(**BUILD_ARTIFACT_NAME**).elf $(**BUILD_ARTIFACT_NAME**).srec 
+>**sym2srec**  $(**BUILD_ARTIFACT_NAME**).**elf** $(**OUTPUT_ARTIFACT_NAME**).**srec** 
 $(**SYMBOL_BASE_ADDR**)
 
 Options are:
 
->**$(BUILD_ARTIFACT_NAME).elf**: executable file (Elf 32bits) containing the 
-symbols to export to the srec file.
+>**$(BUILD_ARTIFACT_NAME).elf**: executable file containing the 
+symbols to export to the srec file. Format of file is 32bits.
 
->**$(BUILD_ARTIFACT_NAME).srec**: S-Record file to create.
+>**$(OUTPUT_ARTIFACT_NAME).srec**: S-Record file to create.
 
->**$(SYMBOL_BASE_ADDR)**: base address where symbols should be stored. Format 
-is 8 digits (ex: 0x002C0000).
+>**$(SYMBOL_BASE_ADDR)**: base address where symbols should be copied. Format 
+is 8 digits and 4 bytes alignment (ex: 0x002C0000).
 
 Example:
 
@@ -30,7 +33,7 @@ Example:
 
 ### Strip
 
-Before running the command, the executable file can be strip with the following 
+Before running the command, the executable file may be strip with the following 
 command line:
 
 >**strip** --discard-all --strip-debug  $(**STRIP_ARTIFACT_NAME**).elf
@@ -41,8 +44,8 @@ Toolchain (arm-none-eabi-strip, ...).
 
 ### Symbols
 
-The wiki in the repository describes how used the symbol table exported in the 
-S-Record file.
+The wiki in the repository describes how a loader can load external
+applications by resolving symbols in the S-Record file.
 
 ### Build
 

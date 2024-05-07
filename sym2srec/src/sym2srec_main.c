@@ -251,7 +251,8 @@ int main (int argc, char *argv[])
       printf ( "Usage:\n\n  sym2srec $(BUILD_ARTIFACT_NAME).elf $(BUILD_ARTIFACT_NAME).srec $(SYMBOL_BASE_ADDR) \n\n" );
       printf ( "  $(BUILD_ARTIFACT_NAME).elf  : elf file (32bits) containing the symbols to export to the srec file.\n" );
       printf ( "  $(BUILD_ARTIFACT_NAME).srec : srecord file to create.\n" );
-      printf ( "  $(SYMBOL_BASE_ADDR)         : base address where symbols should be stored. Format is 8 digits (ex: 0x002C0000).\n\n");
+      printf ( "  $(SYMBOL_BASE_ADDR)         : base address where symbols should be stored. \n");
+      printf ( "                                format is 8 digits and 4 bytes alignment (ex: 0x002C0000).\n\n" );
    }
 
    /* Sinon */

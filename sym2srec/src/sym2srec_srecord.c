@@ -359,6 +359,13 @@ uint32_t sym2srec_createSrecord ( Elf32FileParser_t* p_parser, uint8_t* p_baseAd
    /* Si aucune erreur ne s'est produite */
    if ( l_result == K_SYM2SREC_SUCCESS )
    {
+      /* Si l'adresse fournie par l'utilisateur est correctement alignée */
+      if ( ( p_parser->baseAddr % 4 ) != 0 ) l_result = K_SYM2SREC_ERROR_INVALID_ALIGNMENT;
+   }
+
+   /* Si aucune erreur ne s'est produite */
+   if ( l_result == K_SYM2SREC_SUCCESS )
+   {
       /* Si aucun probléme n'alignement n'est présent */
       if ( ( ( p_parser->baseAddr % p_parser->strtab->sAddrAlign ) != 0 ) ||
            ( ( p_parser->baseAddr % p_parser->symtab->sAddrAlign ) != 0 ) ||

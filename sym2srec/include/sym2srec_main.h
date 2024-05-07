@@ -124,6 +124,13 @@
  */
 
 #define K_SYM2SREC_ERROR_INVALID_ELF_FILE 0xC
+
+/**
+ * @def K_SYM2SREC_ERROR_INVALID_ALIGNMENT
+ * @brief Définition du code de retour 13.
+ */
+
+#define K_SYM2SREC_ERROR_INVALID_ALIGNMENT 0xD
 #ifdef _DEBUG
 
 /**
