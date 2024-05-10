@@ -117,7 +117,7 @@ $(BUILD_ARTIFACT) : $(OBJECT_LIST)
 # C Source Target
 ################################################################################
 
-%.o: ../src/%.c $(INCLUDE_LIST)
+%.o: $(SOURCES_PATH)/%.c $(INCLUDE_LIST)
 
 	@echo $(INCLUDE_LIST)
 	@echo Building file: $< 
