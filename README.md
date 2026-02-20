@@ -1,72 +1,97 @@
 # Sym2srec
 
-**Sym2srec** is a CLI program that copies both sections "*.symtab*" and 
-"*.strtab*" of an executable file into loadable segments of a new executable 
-file. The goal is to allow an external program to run in main memory (dynamic 
-loading). 
+**Sym2srec** is a command-line tool that extracts the `.symtab` and `.strtab` sections
+from an ELF32 executable and embeds them as loadable segments into a new S-Record file.
 
-The software uses a destination address and an **ELF32** file (.elf) as inputs. 
-It produces an **S-Record** file (.srec) as output. A hash table 
-([.gnu hash](https://flapenguin.me/elf-dt-gnu-hash)) is also produced and copied 
-into the S-Record file to accelerate symbol relocations.
+It is used as part of the [Mk](https://github.com/EmbSoft3/Mk) build pipeline to enable
+dynamic loading: external applications can reference Mk kernel symbols at runtime without
+statically linking against the kernel. A GNU hash table is also generated alongside the
+symbol tables to accelerate symbol resolution.
 
-### Usage
+---
 
-**Sym2srec** can be run from the command line interface with the following command:
+## How it works
 
->**sym2srec**  $(**BUILD_ARTIFACT_NAME**).**elf** $(**OUTPUT_ARTIFACT_NAME**).**srec** 
-$(**SYMBOL_BASE_ADDR**)
+```
+make all (Mk)
+  ├── Link  → Mk.elf          (firmware + full debug symbol table)
+  ├── Strip → Mk-Strip.elf    (debug symbols removed, only exported API symbols kept)
+  └── sym2srec Mk-Strip.elf Mk.srec 0x002C0000
+        └── Mk.srec           (firmware + Mk API symbol table → only file to flash)
+```
 
-Options are:
+`Mk.srec` is the only file written to the target. It encodes both the firmware binary and
+the kernel symbol table with their target addresses. `Mk.elf` is preserved intact and
+loaded in Eclipse/GDB as the debug symbol file.
 
->**$(BUILD_ARTIFACT_NAME).elf**: executable file containing the 
-symbols to export to the srec file. Format of file is 32bits.
+---
 
->**$(OUTPUT_ARTIFACT_NAME).srec**: S-Record file to create.
+## Usage
 
->**$(SYMBOL_BASE_ADDR)**: base address where symbols should be copied. Format 
-is 8 digits and 4 bytes alignment (ex: 0x002C0000).
+A prebuilt Windows executable is available in the Mk repository at
+[`Mk/Make/`](https://github.com/EmbSoft3/Mk/tree/main/Mk/Make).
 
-Example:
+```
+sym2srec <input.elf> <output.srec> <base_address>
+```
 
->**sym2srec**  myApps.elf ../build/myApps.srec 0x002C0000
+| Argument | Description |
+|----------|-------------|
+| `input.elf` | ELF32 executable containing the symbols to export. |
+| `output.srec` | Path of the S-Record file to generate. |
+| `base_address` | Address where the symbol table will be loaded in memory. Must be 4-byte aligned, 8 hex digits (e.g. `0x002C0000`). |
 
-### Strip
+**Example:**
 
-Before running the command, the executable file may be strip with the following 
-command line:
+```
+sym2srec Mk-Strip.elf Mk.srec 0x002C0000
+```
 
->**strip** --discard-all --strip-debug  $(**STRIP_ARTIFACT_NAME**).elf
+### Strip the input file first
 
-This command removes all non-global and debug symbols from the artefact.
-Strip is a GNU Development Tools, it can be found in the GNU Development 
-Toolchain (arm-none-eabi-strip, ...).
+Before running sym2srec, strip local and debug symbols from the input ELF to keep only
+the exported API symbols in the generated symbol table:
 
-### Symbol Resolution
+```
+arm-none-eabi-strip --discard-all --strip-debug Mk.elf -o Mk-Strip.elf
+```
 
-The wiki in the repository describes how a dynamic loader may load external
-applications by resolving symbols.
+---
 
-### Build
+## Symbol resolution
 
-Sym2srec can be built using the [makefile](sym2srec/make/makefile) file on the repository.
-The variable **TOOLCHAIN_PATH** must be updated with the path of the MinGW-W64
-toolchain.
+For a detailed description of the symbol resolution protocol (bloom filter, GNU hash table
+lookup, relocation), see the [wiki](https://github.com/EmbSoft3/Sym2srec/wiki).
 
-First issue a **make clean** command then build the target with **make all**.
+---
 
-Currently versions of compiler used are the followings:
+## Build from source
 
-- **gcc** (x86_64-posix-sjlj-rev0, Built by MinGW-W64 project) 8.1.0 
-- **g++** (x86_64-posix-sjlj-rev0, Built by MinGW-W64 project) 8.1.0
+> A prebuilt Windows executable is available at
+> [`Mk/Make/`](https://github.com/EmbSoft3/Mk/tree/main/Mk/Make).
+> Build from source only if you need to modify the tool.
 
-Please note, the application must be built in 32bits (option **-m32**). 
+**Requirements:**
+- [MinGW-W64](https://www.mingw-w64.org/) gcc 8.1.0 (x86_64-posix-sjlj)
+- GNU Make 4.x
+- Windows — the Makefile uses Windows-specific commands
+- 32-bit build required (`-m32`)
 
-### License
+**Steps:**
 
-**Copyright (C)** 2024 **RENARD Mathieu**. All rights reserved.
+1. Set `TOOLCHAIN_PATH` in `sym2srec/make/makefile` to your MinGW-W64 `bin/` directory.
+2. Build:
 
-Sym2srec is free software; There is NO warranty; not even for MERCHANTABILITY or 
-FITNESS FOR A PARTICULAR PURPOSE.
+```
+make clean
+make all
+```
 
-The content of this repository is bound by the [BSD-3-Clause](LICENSE.txt) license.
+---
+
+## License
+
+Copyright © 2024 **Mathieu Renard**. All rights reserved.
+
+This project is licensed under the **BSD 3-Clause License** — see the
+[LICENSE.txt](LICENSE.txt) file for details.
