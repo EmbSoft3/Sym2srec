@@ -1,0 +1,67 @@
+name: Build sym2srec
+
+# -----------------------------------------------------------------------------
+# Workflow triggers
+# -----------------------------------------------------------------------------
+# - Runs automatically on push to the main branch
+# - Runs on pull requests targeting main
+# - Can also be triggered manually from the GitHub Actions UI
+# -----------------------------------------------------------------------------
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build sym2srec
+    runs-on: ubuntu-latest
+
+    steps:
+      # -----------------------------------------------------------------------
+      # Step 1 - Checkout the current repository
+      # Retrieves the project source code so the workflow can build it.
+      # -----------------------------------------------------------------------
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # -----------------------------------------------------------------------
+      # Step 2 - Install 32-bit build dependencies
+      # gcc-multilib provides the 32-bit libraries required by the -m32 flag.
+      # -----------------------------------------------------------------------
+      - name: Install 32-bit toolchain
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y gcc-multilib g++-multilib
+
+      # -----------------------------------------------------------------------
+      # Step 3 - Build sym2srec using the Makefile
+      # - Cleans previous build artifacts
+      # - Compiles the project as a 32-bit binary (-m32)
+      # -----------------------------------------------------------------------
+      - name: Build using Makefile
+        run: |
+          echo "Workspace = $GITHUB_WORKSPACE"
+          cd sym2srec/make/
+          make clean
+          make all
+
+      # -----------------------------------------------------------------------
+      # Step 4 - Upload build artifacts
+      # Uploads the generated binary so it can be downloaded from the
+      # GitHub Actions interface.
+      #
+      # The step is skipped when running locally with "act" because artifact
+      # upload requires the GitHub runtime environment.
+      # -----------------------------------------------------------------------
+      - name: Upload build artifacts
+        if: ${{ !env.ACT }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: sym2srec
+          path: |
+            **/sym2srec
