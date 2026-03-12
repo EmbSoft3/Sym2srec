@@ -31,6 +31,7 @@
 *
 */
 
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -38,7 +39,6 @@
  *
  */
 
-#include "sym2srec_types.h"
 #include "sym2srec_elf.h"
 #include "sym2srec_main.h"
 
