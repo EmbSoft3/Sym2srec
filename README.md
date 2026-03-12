@@ -28,7 +28,7 @@ loaded in Eclipse/GDB as the debug symbol file.
 
 ## Usage
 
-A prebuilt Windows executable is available in the Mk repository at
+Prebuilt executables for Windows and Linux are available in the Mk repository at
 [`Mk/Make/`](https://github.com/EmbSoft3/Mk/tree/main/Mk/Make).
 
 ```
@@ -71,21 +71,51 @@ lookup, relocation), see the [wiki](https://github.com/EmbSoft3/Sym2srec/wiki).
 > [`Mk/Make/`](https://github.com/EmbSoft3/Mk/tree/main/Mk/Make).
 > Build from source only if you need to modify the tool.
 
-**Requirements:**
-- [MinGW-W64](https://www.mingw-w64.org/) gcc 8.1.0 (x86_64-posix-sjlj)
-- GNU Make 4.x
-- Windows — the Makefile uses Windows-specific commands
+### Requirements
+
+#### All platforms
+- GNU Make 4.3
+- [Mk Includes](https://github.com/EmbSoft3/Mk/tree/main/Mk/Includes)
 - 32-bit build required (`-m32`)
+
+#### Windows only (one of the following)
+- [GCC 15.2.0 (POSIX threads) + MinGW-w64 13.0.0 UCRT (release 6)](https://github.com/brechtsanders/winlibs_mingw/releases/tag/15.2.0posix-13.0.0-ucrt-r6)
+- [MSYS2](https://www.msys2.org/) *(recommended)* — provides `sh`, `find`, `rm` and other Unix tools required by the Makefile
+- [Git for Windows](https://git-scm.com/) — Git Bash ships the same Unix tools
+
+> The Makefile automatically detects MSYS2 or Git Bash at their default installation
+> paths (`C:/msys64` and `C:/Program Files/Git`). If your installation is elsewhere,
+> update `MSYS2_BIN` or `GITBASH_BIN` at the top of `sym2srec/make/makefile`.
 
 **Steps:**
 
-1. Set `TOOLCHAIN_PATH` in `sym2srec/make/makefile` to your MinGW-W64 `bin/` directory.
+1. Set `MINGW_PATH` in `sym2srec/make/makefile` to your MinGW-W64 `bin/` directory.
 2. Build:
 
-```
+```bash
 make clean
-make all
+make all        # Release build
 ```
+
+### Compiler versions
+
+| Platform | Tool | Version |
+|----------|------|---------|
+| Windows | `gcc` (MinGW) | 15.2.0 POSIX ([WinLibs](https://github.com/brechtsanders/winlibs_mingw/releases/tag/15.2.0posix-13.0.0-ucrt-r6)) |
+| Windows | `make` | GNU Make 4.3 |
+| Linux | `gcc` | system GCC with `gcc-multilib` |
+| Linux | `make` | GNU Make 4.3 |
+
+---
+
+## Continuous Integration
+
+Every push and pull request is automatically built by **GitHub Actions**.
+The workflow installs the GNU Toolchain, runs `make all`,
+and uploads `sym2srec` as a downloadable build artifact.
+
+The latest successful build artifact is available on the
+[Actions](../../actions) tab of this repository.
 
 ---
 
