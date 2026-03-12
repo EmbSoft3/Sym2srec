@@ -64,4 +64,4 @@ jobs:
         with:
           name: sym2srec
           path: |
-            **/sym2srec
+            sym2srec/make/sym2srec
